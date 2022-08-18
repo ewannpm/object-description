@@ -1,0 +1,25 @@
+{
+  "name": "@ewannpm/object-description",
+  "version": "1.0.0",
+  "description": "Object Description",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ewannpm/object-description.git"
+  },
+  "main": "dist/ObjectDescription.cjs.js",
+  "module": "dist/ObjectDescription.esm.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ewannpm/object-description/issues"
+  },
+  "homepage": "https://github.com/ewannpm/object-description#readme"
+}
