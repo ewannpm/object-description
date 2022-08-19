@@ -6,15 +6,15 @@
     "type": "git",
     "url": "git+https://github.com/ewannpm/object-description.git"
   },
-  "main": "dist/ObjectDescription.cjs.js",
-  "module": "dist/ObjectDescription.esm.js",
+  "main": "lib/main.cjs.js",
+  "module": "lib/main.esm.js",
+  "browser": "lib/main.umd.js",
   "directories": {
     "example": "example"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  
   "keywords": [],
   "author": "",
   "license": "ISC",
