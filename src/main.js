@@ -125,7 +125,8 @@ export default class ObjectDescription {
             },
             '[object Number]': ({ target }) => target,
             '[object Boolean]': ({ target }) => target,
-            '[object Function]': ({ target }) => target
+            '[object Function]': ({ target }) => target,
+            '[object RegExp]': ({ target }) => target
         }
         const handleChildren = (children, inline) => {
             let html = ''
