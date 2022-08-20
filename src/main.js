@@ -1,5 +1,5 @@
 
-export default class ObjectDescription {    
+export default class ObjectDescription {
     constructor(target, options) {
         this.html = ''
         this.info = null
@@ -8,43 +8,59 @@ export default class ObjectDescription {
             quotes: `"`
         }, options)
         this.styleMapPath = {}
-  
+        this.nodeMapOptions = []
+
         if (typeof target === 'string') target = this.strToObj(target)
-        const {INFO_TREE, INFO_MAP_PATH} = this.objToInfo(target)
+        const { INFO_TREE, INFO_MAP_PATH } = this.objToInfo(target)
         this.info = INFO_TREE
         this.infoMapPath = INFO_MAP_PATH
-  
-        const { formatter, style, styles, nodeMultiple } = this.options
+
+        const { formatter, style, styles, nodeMultiple, comment } = this.options
         if (formatter) {
             if (formatter.inline) formatter.inline.forEach(node => {
                 INFO_MAP_PATH[node] && (INFO_MAP_PATH[node].isInline = true)
             })
         }
         if (styles) this.addStyle(styles)
+
+        // 处理选项节点
         if (nodeMultiple) {
+            const nodeMapOptions = {}
             for (let key in nodeMultiple) {
                 const node = INFO_MAP_PATH[key]
-                const [index, options] = nodeMultiple[key]
+                const [index, options, title = 'UNNAMED', names = []] = nodeMultiple[key]
                 const arr = []
-                options.forEach(option => {
-                    const {INFO_TREE} = this.objToInfo(option, node, {isInline: true})
+                const optionsInfo = []
+                options.forEach((option, i) => {
+                    const { INFO_TREE } = this.objToInfo(option, node, { isInline: true })
                     arr.push(INFO_TREE)
+                    optionsInfo.push({ index: i, name: names[i] || i, node: key })
                 })
+                nodeMapOptions[key] = { title, options: optionsInfo }
                 node.optionDefault = index
                 node.options = arr
             }
+            this.nodeMapOptions = nodeMapOptions
         }
+
+        // 处理注释
+        if (comment) {
+            for (let key in comment) {
+                INFO_MAP_PATH[key] && (INFO_MAP_PATH[key].comment = comment[key])
+            }
+        }
+
     }
     objToInfo(obj, parent, options) {
         const INFO_MAP_PATH = {}
-        const INFO_TREE = {path: parent ? parent.path : '', order: 0, isOrderFirst: true, isOrderLast: true}
+        const INFO_TREE = { path: parent ? parent.path : '', order: 0, isOrderFirst: true, isOrderLast: true }
         options && Object.assign(INFO_TREE, options)
         function parseObj(obj, info, level) {
             info.children = []
             let i = 0, len = Object.keys(obj).length
             for (let key in obj) {
                 const path = info.path + `.${key}`
-                const childInfo = {key, path, order: i, structureType: 'VALUE'}
+                const childInfo = { key, path, order: i, structureType: 'VALUE' }
                 if (i === 0) childInfo.isOrderFirst = true
                 if (i >= len - 1) childInfo.isOrderLast = true
                 INFO_MAP_PATH[path] = childInfo
@@ -57,14 +73,14 @@ export default class ObjectDescription {
             info.children = []
             arr.forEach((e, i) => {
                 const path = info.path + `[${i}]`
-                const childInfo = {path, order: i, structureType: 'ITEM'}
+                const childInfo = { path, order: i, structureType: 'ITEM' }
                 if (i === 0) childInfo.isOrderFirst = true
                 if (i >= arr.length - 1) childInfo.isOrderLast = true
                 INFO_MAP_PATH[path] = childInfo
                 info.children.push(childInfo)
                 parseTarget(e, arr, childInfo, level + 1)
             })
-        }    
+        }
         function parseTarget(target, parent, info, level) {
             info.level = level
             info.target = target
@@ -76,7 +92,7 @@ export default class ObjectDescription {
         }
         const level = parent ? parent.level : 0
         parseTarget(obj, parent, INFO_TREE, level)
-        return {INFO_TREE, INFO_MAP_PATH}
+        return { INFO_TREE, INFO_MAP_PATH }
     }
     strToObj(str) {
         let exeStr = `(() => (${str}))()`
@@ -86,7 +102,7 @@ export default class ObjectDescription {
         if (!styles) return
         const styleMapPath = {}
         styles.forEach(([nodes, style]) => {
-            nodes.forEach(path => {styleMapPath[path] = style})
+            nodes.forEach(path => { styleMapPath[path] = style })
         })
         clean ? this.styleMapPath = styleMapPath : Object.assign(this.styleMapPath, styleMapPath)
     }
@@ -101,19 +117,19 @@ export default class ObjectDescription {
         html += this.printInfo(this.info, [])
         if (style) html += `</span>`
         return html
-    }    
+    }
     printInfo(info, inline) {
         const { quotes, indent } = this.options
         const { styleMapPath } = this
-        const indentFn = (level, inline) => inline ? '' : new Array(level * indent + 1).join(' ')        
+        const indentFn = (level, inline) => inline ? '' : new Array(level * indent + 1).join(' ')
         const dataTypeHandler = {
-            '[object Object]': ({level, children, isInline}) => {
+            '[object Object]': ({ level, children, isInline }) => {
                 let html = '{' + (isInline ? '' : '\n')
                 html += handleChildren(children, isInline)
                 html += indentFn(level, isInline) + '}'
                 return html
             },
-            '[object Array]': ({level, children, isInline}) => {
+            '[object Array]': ({ level, children, isInline }) => {
                 let html = '[' + (isInline ? '' : '\n')
                 html += handleChildren(children, isInline)
                 html += indentFn(level, isInline) + ']'
@@ -137,8 +153,8 @@ export default class ObjectDescription {
             return html
         }
         function handleTarget(info, inline) {
-            let {dataType, structureType, key, isOrderLast, path, level, options, optionDefault} = info
-            const style =styleMapPath[path]
+            let { dataType, structureType, key, isOrderLast, path, level, options, optionDefault, comment } = info
+            const style = styleMapPath[path]
             if (options) {
                 info = options[optionDefault]
                 dataType = info.dataType
@@ -150,9 +166,10 @@ export default class ObjectDescription {
             html += dataTypeHandler[dataType](info)
             html += style ? '</span>' : ''
             html += isOrderLast ? '' : ', '
-            html += inline ? '' : '\n'
+            html += comment ? ' // ' + comment : ''
+            html += (!comment && inline) ? '' : '\n'
             return html
-        }        
-        return handleTarget(info, inline)        
+        }
+        return handleTarget(info, inline)
     }
-  }
+}

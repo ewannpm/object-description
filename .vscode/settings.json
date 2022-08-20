@@ -1,0 +1,11 @@
+{
+    "editor.tabSize": 4,
+    "editor.minimap.enabled": false,
+    "editor.mouseWheelZoom": true,
+
+    "editor.formatOnSave": true,                                                  
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "editor.detectIndentation": false
+}
