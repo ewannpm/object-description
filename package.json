@@ -1,24 +1,37 @@
 {
-  "name": "@ewannpm/object-description",
-  "version": "1.0.4",
-  "description": "Object Description",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ewannpm/object-description.git"
-  },
-  "main": "lib/main.cjs.js",
-  "module": "lib/main.esm.js",
-  "directories": {
-    "example": "example"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ewannpm/object-description/issues"
-  },
-  "homepage": "https://github.com/ewannpm/object-description#readme"
+    "name": "@ewannpm/object-description",
+    "version": "1.0.4",
+    "description": "Object Description",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ewannpm/object-description.git"
+    },
+    "main": "lib/main.cjs.js",
+    "module": "lib/main.esm.js",
+    "directories": {
+        "example": "example"
+    },
+    "scripts": {
+        "lib": "rollup -c",
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ewannpm/object-description/issues"
+    },
+    "homepage": "https://github.com/ewannpm/object-description#readme",
+    "dependencies": {
+        "vue": "^3.0.0"
+    },
+    "devDependencies": {
+        "@vue/cli-service": "^5.0.8",
+        "@vue/compiler-sfc": "^3.2.6",
+        "webpack": "^5.50.0",
+        "webpack-cli": "^4.9.2",
+        "sass": "^1.49.7",
+        "sass-loader": "^12.4.0"
+    }
 }
