@@ -13,8 +13,8 @@
     },
     "scripts": {
         "lib": "rollup -c",
-        "serve": "vue-cli-service serve",
-        "build": "vue-cli-service build"
+        "example": "vue-cli-service build",
+        "dev": "vue-cli-service serve"
     },
     "keywords": [],
     "author": "",
@@ -24,7 +24,8 @@
     },
     "homepage": "https://github.com/ewannpm/object-description#readme",
     "dependencies": {
-        "vue": "^3.0.0"
+        "vue": "^3.0.0",
+        "vue-router": "^4.1.5"
     },
     "devDependencies": {
         "@vue/cli-service": "^5.0.8",
